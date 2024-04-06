@@ -87,7 +87,7 @@ const listoJugador=(snapshot)=>{
     }
 }
 
-fetch('https://db-connect.onrender.com/')
+fetch('https://stop-it.onrender.com')
     .then(response => response.json())
     .then(data => {
     for(let info in data[0]){
@@ -598,7 +598,7 @@ let insertarImagen = (id1,ruta,d1,d2,x,y,fs,fr) => {
 let crearCarta = (cId,id) => {
     cc = carta.get(id);
     for (let i in cc)
-        insertarImagen(cId,`imagenes/${cc[i].ruta}`, cc[i].ancho, cc[i].alto, cc[i].x, cc[i].y, cc[i].factScale, cc[i].factRotate);
+        insertarImagen(cId,`/imagenes/${cc[i].ruta}`, cc[i].ancho, cc[i].alto, cc[i].x, cc[i].y, cc[i].factScale, cc[i].factRotate);
 };
 
 let asignarJugadores = (jugadores)  => {
