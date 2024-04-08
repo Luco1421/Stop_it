@@ -1,5 +1,5 @@
 copiar = () => navigator.clipboard.writeText(document.getElementById('c-nv').innerText);
-pegar = () => {navigator.clipboard.readText().then(texto => {document.getElementById('floatingInput3').value += texto;});};
+pegar = () => {navigator.clipboard.readText().then(texto => {document.getElementById('floatingInput3').value = texto;});};
  
 $('.collapse').on('shown.bs.collapse', function () {
     var $this = $(this);

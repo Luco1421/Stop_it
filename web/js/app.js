@@ -19,7 +19,7 @@ let ocupados = [false,false,false,false,false,false];
 let modos = ['tripleta', 'papa_caliente', 'torre', 'regalo_envenenado', 'pozo'];
 let tematicas = ['avatar', 'got', 'brands'];
 let cantImag = [4, 5, 6, 8, 9];
-let elementosLista = [['/assets/icos/blue.png','blue'],['assets/icos/gray.png','gray'],
+let elementosLista = [['assets/icos/blue.png','blue'],['assets/icos/gray.png','gray'],
     ['assets/icos/green.png','green'],['assets/icos/orange.png','orange'],['assets/icos/purple.png','purple'],
     ['assets/icos/red.png','red']];
 
@@ -36,7 +36,8 @@ const app ={
         document.getElementById(currentPage).classList.add('activo');
         ocultar(currentPage);
     }
-}
+};
+
 
 const ingresaJugador=(snapshot)=>{
     const nuevo=snapshot.val();
@@ -52,10 +53,9 @@ const ingresaJugador=(snapshot)=>{
         }
         info.set(nuevo,valor);
         ocupados[valor.num]=true;
-        agregarElementoConImagen(valor.num);
+        agregarElementoConImagen(valor.num, valor.name);
     })
 }
-
 
 const saleJugador=(snapshot)=>{
     const out=snapshot.val();
@@ -294,7 +294,8 @@ function setSala(numero){
 }
 
 function rollBack(){
-    limp();
+    limp(2);
+    limp(3);
     quitarZoom();
     document.querySelector('.wr').classList.remove('show');
     document.getElementById('start-btn').setAttribute('style','display:none');
@@ -406,15 +407,18 @@ function crear(){
 
 })();
 
-function agregarElementoConImagen(i) {
+function agregarElementoConImagen(i,nombre) {
     const contenedorPadre = document.getElementById('padre');
     const nuevoElemento = document.createElement('div');
     nuevoElemento.classList.add('col');
+    nuevoElemento.classList.add('Player');
     const imagen = document.createElement('img');
+    const texto = document.createElement('h1');
+    texto.innerHTML = nombre;
     imagen.src = elementosLista[i][0];
-    imagen.classList.add('imagenJuga');
     nuevoElemento.id = elementosLista[i][1];
     nuevoElemento.appendChild(imagen);
+    nuevoElemento.appendChild(texto);
     contenedorPadre.appendChild(nuevoElemento);
 }
 
@@ -430,37 +434,197 @@ function eliminarDivHijo(i) {
 let mazoJuego;
 let click = [];
 let antGanador,turnoLocal;
+let pasarTurno;
+let contador;
 
-const winner = (snapshot)=>{
-    const nam = snapshot.val();
-    console.log('Se activa ganador: ', nam);
-    if(nam!='null'){
-        console.log('Ganador: ', nam);
-        const gan=info.get(nam);
-        gan.puntos+=1;
-        if(antGanador!=null){
-            document.getElementById(elementosLista[antGanador.num][1]).classList.remove('winner');
+const winner = {
+    tripleta: function(snapshot){
+        const nam = snapshot.val();
+        if(nam!='null'){
+            const gan=info.get(nam);
+            gan.puntos+=1;
+            if(antGanador!=null){
+                document.getElementById(elementosLista[antGanador.num][1]).classList.remove('winner');
+            }
+            console.log('Puntos del actual ganador: ', gan.puntos);
+            antGanador=gan;
+            document.getElementById(elementosLista[gan.num][1]).classList.add('winner');
+            pasarTurno();
         }
-        console.log('Puntos del actual ganador: ', gan.puntos);
-        antGanador=gan;
-        document.getElementById(elementosLista[gan.num][1]).classList.add('winner');
-        pasarTurno();
+    },
+   
+    papaCaliente: async function(snapshot) {
+        const nam=snapshot.val();
+        console.log('winner papaCaliente');
+        if(nam!='null'){
+            console.log('Turno parcial');
+            const j=info.get(nam);
+            await mnsGan('Jugada de ', j.name, 1000);
+            contador++;
+            if(nam == playerId)server.ref(`sala/${salaId}/ganador`).set('null');
+            turnoLocal++;
+            server.ref(`cartas/${salaId}/mazoJuego`).once('value').then((snapshot)=>{
+                const cartasEliminar = snapshot.val();
+                let laPone = document.querySelector(`.${cartasEliminar[0]}`);
+                console.log('La pone',info.get(cartasEliminar[0]).name);
+                let seLaPonen = document.querySelector(`.${cartasEliminar[1]}`);
+                let idAux = +laPone.lastElementChild.textContent;
+                console.log('Se la ponen',info.get(cartasEliminar[1]).name);
+                antGanador = cartasEliminar[1];
+                limpiarCarta(laPone.id);
+                laPone.style.background = `center / contain no-repeat url(imagenes/${mazos.get(mazoId).rutaReverso})`;
+                limpiarCarta(seLaPonen.id);
+                crearCarta(seLaPonen.id,idAux);
+                console.log('Despues limpiar La pone',laPone.id);
+                console.log('Despues limpiar Se la ponen',seLaPonen.id);
+                limp(2);
+                progBtn(2);
+                console.log('Contador: ', contador);
+                if(contador==cantPlayers-1){
+                    console.log('entre a contador');
+                    pasarTurno();
+                }
+            }).catch((error)=>{
+                console.log('Error obtener cartas eliminar',error);
+            });
+        }
+    },
+
+    regaloEnvenenado: function(snapshot) {
+
+    },
+    
+    pozo: function(snapshot) {
+
+    },
+    
+    torre: function(snapshot) {
+
     }
-}
+};
+
+const turno = {
+    tripleta: async function(){
+        await mnsGan('Gana: ',antGanador.name,2000);
+        limpiarClick();
+        console.log('pasa turno');
+        server.ref('sala/'+salaId+'/ganador').set('null');
+        if(mazoJuego.length<3){
+            await mostrarGanador();
+            server.ref('sala/'+salaId+'/ganador').off('value', winner.tripleta);
+            document.getElementById(elementosLista[antGanador.num][1]).classList.remove('winner');
+            rollBack();
+        }
+        else{
+            turnoLocal++;
+            rellenarMesaTripleta();
+        }
+    },
+    
+    papaCaliente: async function() {
+        console.log('se paso el turno');
+        const j=info.get(antGanador);
+        await mnsGan('Pierde ', j.name, 1000);
+        j.puntos-=1;
+        contador=0;
+        limpiarClick();
+        if(mazoJuego.length < arrJug.length){
+            console.log('se acabo el juego');
+            await mostrarGanador();
+            server.ref('sala/'+salaId+'/ganador').off('value', winner.papaCaliente);
+            rollBack();
+        }
+        else{
+            await cuentaRegresiva();
+            console.log('Aqui se paso aumento turno: ', turnoLocal);
+            repartirCartas('pc');
+            limp('pc');
+            progBtn(2);
+        }
+    },
+
+    regaloEnvenenado: function() {
+
+    },
+    
+    pozo: function() {
+
+    },
+    
+    torre: function() {
+
+    }
+};
+
+const prep = {
+    tripleta: function(){
+        console.log('Entra Tripleta!');
+        jug.puntos=0;
+        server.ref(`sala/${salaId}/ganador`).on('value', winner.tripleta);
+        app.pasar('tripleta_pagina');
+        ponerZoom();
+        iniciarMesaTripleta();
+    },
+    papaCaliente: async function(){
+        console.log('Papa Caliente!');
+        jug.puntos=0;
+        server.ref('sala/'+salaId+'/ganador').on('value', winner.papaCaliente);
+        arrJug.sort();
+        contador=0;
+        asignarJugadores('pc');
+        voltearCarta('pc');
+        app.pasar('papa_caliente_pagina');
+        ponerZoom();
+        await cuentaRegresiva();
+        repartirCartas('pc');
+    },
+    torre: function() {
+        console.log('Entra Torre!');
+        jug.puntos=0;
+        server.ref(`player/${playerId}`).update({puntos: 0});
+        //iniciarMesaTripleta();
+    },
+    regaloEnvenenado: function () {
+        console.log('Entra Regalo Envenenado!');
+        jug.puntos=0;
+        server.ref(`player/${playerId}`).update({puntos: 0});
+        //iniciarMesaTripleta();
+        asignarJugadores();
+    },
+    pozo: function(){
+        console.log('Entra Tripleta!');
+        jug.puntos=0;
+        server.ref(`player/${playerId}`).update({puntos: 0});
+        //iniciarMesaTripleta();
+        asignarJugadores();
+    }
+};
 
 async function prepararModo(mod){
     if(host == playerId){
         server.ref('cartas/'+salaId+'/mazo').remove();
-        server.ref('sala/'+salaId+'/turno').set(0);
-    } 
-    else await esperar(()=>{console.log('Esperando...')}, 1000);
+        server.ref('sala/'+salaId).update({ganador: 'null', turno: 0});
+    }
+    else await esperar(()=>{console.log('Esperando...')}, 250);
     turnoLocal=0;
     antGanador = null;
-    if(mod==0) iniciarMazo(prepTripleta);
-    else if(mod==1) prepPapaCaliente();
-    else if(mod==2) prepTorre();
-    else if(mod==3) prepRegaloEnvenenado();
-    else prepPozo();
+    if(mod==0){
+        pasarTurno=turno.tripleta;
+        iniciarMazo(prep.tripleta);
+    }
+    else if(mod==1){
+        pasarTurno=turno.papaCaliente;
+        iniciarMazo(prep.papaCaliente);
+    }
+    else if(mod==2){
+        pasarTurno = turno.torre;
+    }
+    else if(mod==3){
+        pasarTurno = turno.regaloEnvenenado;
+    }
+    else{
+        pasarTurno=turno.pozo;
+    }
 }
 
 function getRandom(min, max){return Math.floor(Math.random()*(max-min))+min;}
@@ -475,7 +639,7 @@ function permutar(todasCartas){
     }
     console.log('Ya permute!');
     return arCartas;
-}
+}prepararModo
 
 function iniciarMazo(fun){
     if(host == playerId){
@@ -493,7 +657,7 @@ function obtenerMazoLocal(fun){
             console.log('mazo obtenido', mazoJuego);
             return fun();
         }
-        setTimeout(obtenerMazoLocal(fun), 500);
+        setTimeout(obtenerMazoLocal(), 500);
     }).catch((error)=>{
         console.log('Error al obtener el mazo', error);       
     });
@@ -512,12 +676,12 @@ async function intento(cartasEliminar){
             return turn;
         });
         if(!transResult.committed){
-            throw 'Intento no commited'
+            throw 'Intento no commited';
         }
         if(band==true){
-            console.log('gane!');
-            server.ref(`cartas/${salaId}/mazoJuego`).set(cartasEliminar);
-            server.ref(`sala/${salaId}`+'/ganador').set(playerId);
+            console.log('Fui el primer intento!');
+           server.ref(`cartas/${salaId}/mazoJuego`).set(cartasEliminar);
+           server.ref(`sala/${salaId}`+'/ganador').set(playerId);
         }
         return console.log('Intento bien!'); //return print
     }
@@ -540,8 +704,24 @@ function verificarIguales(saux,mod) {
         
         if (saux.id != click[0].id) {
             click.push(saux);
+            var val1 = document.getElementById(click[0].id).classList[1];
+            var val2 = document.getElementById(click[1].id).classList[1];
             let cartasEliminar = [];
-            for(let i = 0; i < mod; i++) cartasEliminar.push(click[i].id);
+            if((mod == 2) && (val1 != playerId && val2 != playerId)){
+                alert('no presione mi carta');
+                return limpiarClick();
+            }
+            if(mod == 2){
+                if(playerId == val1){ 
+                    cartasEliminar.push(val1);
+                    cartasEliminar.push(val2);
+                }
+                else{
+                    cartasEliminar.push(val2);
+                    cartasEliminar.push(val1);
+                }
+            }    
+            else for(let i = 0; i < mod; i++) cartasEliminar.push(click[i].id);
             console.log(cartasEliminar);
             click = [];
             intento(cartasEliminar);
@@ -550,9 +730,13 @@ function verificarIguales(saux,mod) {
     else {
         click.push(saux);
         alert('No son iguales, intentalo de nuevo');
-        click.forEach((e) => e.style.borderColor = '');
-        click = [];
+        limpiarClick();
     }
+}
+
+function limpiarClick() {
+    click.forEach((e) => e.style.borderColor = '');
+    click = [];
 }
 
 function validarFigueres(saux,mod){
@@ -568,18 +752,31 @@ function limpiarCarta(id) {
     div.innerHTML = "";
 }
 
-function colorAStringRGBA(color) {
-    const colorObj = tinycolor(color);
-    const rgb = colorObj.toRgb();
-    return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.1)`;
+function limpiarFondo(modo) {
+    for(let i in arrJug){
+        let t67 = document.getElementById(`pc${i}`);
+        t67.style.background = '';
+        const j = info.get(arrJug[i]);
+        cJ = document.getElementById(`${modo+i}`);
+        const rgb = tinycolor(elementosLista[j.num][1]).toRgb();
+        const rta = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.1)`;
+        cJ.style.backgroundColor = rta;
+    }
 }
 
-let insertarImagen = (id1,ruta,d1,d2,x,y,fs,fr) => {
+function voltearCarta(mod) {
+    for(let i in arrJug) {
+        let t67 = document.getElementById(`${mod+i}`);
+        t67.style.background = `center / contain no-repeat url(imagenes/${mazos.get(mazoId).rutaReverso})`;
+    }
+}
+
+let insertarImagen = (id1,ruta,d1,d2,x,y,fs,fr,id) => {
     let carta =  document.getElementById(id1);
     let contenedor = document.createElement('div');
     contenedor.style.position = 'absolute';
     contenedor.style.transform = `translate(${x}px, ${y}px)`;
- 
+
     carta.appendChild(contenedor);
 
     let imagen = document.createElement('img');
@@ -591,22 +788,34 @@ let insertarImagen = (id1,ruta,d1,d2,x,y,fs,fr) => {
     imagen.classList.add('btn');
     imagen.classList.add('cp');
     imagen.id = id1;
-
+    
     contenedor.appendChild(imagen);
 };
 
 let crearCarta = (cId,id) => {
     cc = carta.get(id);
-    for (let i in cc)
-        insertarImagen(cId,`/imagenes/${cc[i].ruta}`, cc[i].ancho, cc[i].alto, cc[i].x, cc[i].y, cc[i].factScale, cc[i].factRotate);
+    for(let i in cc)
+        insertarImagen(cId,`imagenes/${cc[i].ruta}`, cc[i].ancho, cc[i].alto, cc[i].x, cc[i].y, cc[i].factScale, cc[i].factRotate,id);
+    let cont = document.getElementById(cId)
+    let cid = document.createElement('a');
+    cid.textContent=id;
+    cid.setAttribute('hidden','true');
+    cont.appendChild(cid);
 };
 
-let asignarJugadores = (jugadores)  => {
-    for(let i in jugadores) {
-        cJ = document.getElementById(`${jugadores[i][1]}`);
+function asignarJugadores(modo) {
+    for(let i in arrJug){
+        console.log(modo+i);
+        const j = info.get(arrJug[i]);
+        console.log(j);
+        cJ = document.getElementById(`${modo+i}`);
         cJ.removeAttribute('hidden');
-        cJ.style.borderColor = elementosLista[i][1];
-        cJ.style.backgroundColor = colorAStringRGBA(elementosLista[i][1]);
+        cJ.style.borderColor = elementosLista[j.num][1];
+        const rgb = tinycolor(elementosLista[j.num][1]).toRgb();
+        const rta = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.2)`;
+        cJ.style.backgroundColor = rta;
+        if(cJ.classList.length==2) cJ.classList.remove(cJ.classList[1]);
+        cJ.classList.add(`${j.id}`);
     }
 }
 
@@ -614,7 +823,7 @@ async function mostrarGanador(){
     let win = arrJug[0], aux = null;
     arrJug.forEach((keys)=>{
         console.log(info.get(win).puntos,' vs ', info.get(keys).puntos);
-        if(keys != playerId && info.get(win).puntos == info.get(keys).puntos){
+        if(keys != arrJug[0] && info.get(win).puntos == info.get(keys).puntos){
             console.log('IGual');
             aux = keys;
         }
@@ -624,8 +833,8 @@ async function mostrarGanador(){
             aux = null;
         }
     });
-    if(aux == null) await mnsGan('Ganador: ',info.get(win).name);
-    else await mnsGan('Ganador: ','Empate');
+    if(aux == null) await mnsGan('Ganador: ',info.get(win).name,2000);
+    else await mnsGan('Ganador: ','Empate',2000);
 }
 
 function esperar(funcion,ms){
@@ -637,24 +846,28 @@ function esperar(funcion,ms){
     });
 }
 
-//----------------------------------------------------Tripleta-------------------------------------------------------------
+let progBtn = (mod) => {
+    document.querySelectorAll('.btn').forEach(i => {
+        i.addEventListener("click", (mod==3)?handleClickT:handleClickM);
+    });
+};
 
-let limp = () => {
+let limp = (mod) => {
     document.querySelectorAll('.btn').forEach(i=>{
-        i.removeEventListener('click',handleClickT);
+        i.removeEventListener('click',(mod==3)?handleClickT:handleClickM);
         i.style.borderColor = '';
         click = [];
     });
 }
 
-async function mnsGan(mns,name) {
+async function mnsGan(mns,name,s) {
     document.getElementById('ganador').innerHTML += mns + "\n" + name;
     document.getElementById('pntGan').removeAttribute('hidden');
     let q = () => {
         document.getElementById('ganador').innerHTML = '';
         document.getElementById('pntGan').setAttribute('hidden','true');
     };
-    await esperar(q,2000);
+    await esperar(q,s);
 }
 
 let handleClickT = (event) => {
@@ -666,104 +879,6 @@ let handleClickM = (event) => {
     event.target.style.borderColor = 'greenyellow';
     validarFigueres(event.target,2);
 };
-
-let progBtn = (mod) => {
-    document.querySelectorAll('.btn').forEach(i => {
-        i.addEventListener("click", (mod==3)?handleClickT:handleClickM);
-    });
-};
-
-function prepTripleta(){
-    console.log('Entra Tripleta!');
-    jug.puntos=0;
-    iniciarMesaTripleta();
-    server.ref('sala/'+salaId+'/ganador').on('value', winner);
-    app.pasar('tripleta_pagina');
-    ponerZoom();
-}
-
-function iniciarMesaTripleta(){
-    console.log('ArregloIniciar', mazoJuego);
-    for (let p = 0; p < jug.cantImagen + 1; p++) {
-        document.getElementById(`tp${p}`).removeAttribute('hidden');
-    }
-    for(var i = 0; i < jug.cantImagen+1; i++) {
-        console.log('Tenemos i ' + i + ' Carta: '+mazoJuego[mazoJuego.length-1]);
-        crearCarta(`tp${i}`, mazoJuego.pop());
-    }
-    progBtn(3);
-    cambiarMouse(jug.tematica);
-}
-
-async function pasarTurno(){
-    await mnsGan('Gana: ',antGanador.name);
-    click.forEach((e) => e.style.borderColor = '');
-    click = [];
-    console.log('pasa turno');
-    server.ref('sala/'+salaId+'/ganador').set('null');
-    if(mazoJuego.length<3){
-        await mostrarGanador();
-        server.ref('sala/'+salaId+'/ganador').off('value', winner);
-        document.getElementById(elementosLista[antGanador.num][1]).classList.remove('winner');
-        rollBack();
-    } 
-    else{
-        turnoLocal++;
-        console.log('Aqui se paso aumento turno: ', turnoLocal);
-        rellenarMesa();
-    }
-}
-
-function rellenarMesa(){
-    limp();
-    server.ref(`cartas/${salaId}/mazoJuego`).once('value').then((snapshot)=>{
-        const cartasEliminar=snapshot.val();
-        for(var i = 0; i < cartasEliminar.length; i++){
-            limpiarCarta(cartasEliminar[i]);
-            crearCarta(cartasEliminar[i],mazoJuego.pop());
-        }
-        progBtn(3);
-        cambiarMouse(jug.tematica);
-    }).catch((error)=>{
-        console.log('Error al rellenar mesa',error);
-    });
-}
-
-
-//--------------------------------------------------------------------------------------------------------------------------
-
-function prepPapaCaliente() {
-    console.log('Papa Caliente!');
-    jug.puntos=0;
-    server.ref(`player/${playerId}`).update({puntos: 0});
-    asignarJugadores();
-}
-
-function prepTorre() {
-    console.log('Entra Torre!');
-    jug.puntos=0;
-    server.ref(`player/${playerId}`).update({puntos: 0});
-    //iniciarMesaTripleta();
-}
-
-function prepRegaloEnvenenado() {
-    console.log('Entra Regalo Envenenado!');
-    jug.puntos=0;
-    server.ref(`player/${playerId}`).update({puntos: 0});
-    //iniciarMesaTripleta();
-    asignarJugadores();
-}
-
-function prepPozo(){
-    console.log('Entra Tripleta!');
-    jug.puntos=0;
-    server.ref(`player/${playerId}`).update({puntos: 0});
-    //iniciarMesaTripleta();
-    asignarJugadores();
-}
-
-
-//-------------------------------
 
 function cambiarMouse(modo) {
     document.querySelector('body').className = '';
@@ -807,3 +922,50 @@ function cambiarMouse(modo) {
         return;
     }
 }
+
+async function cuentaRegresiva() {
+    for (let i=3; i; i--) await mnsGan(` ${i}`,' ',1000);
+}
+//----------------------------------------------------Tripleta-------------------------------------------------------------
+function iniciarMesaTripleta(){
+    console.log('ArregloIniciar', mazoJuego);
+    for (let p = 0; p < jug.cantImagen + 1; p++) {
+        document.getElementById(`tp${p}`).removeAttribute('hidden');
+    }
+    for(var i = 0; i < jug.cantImagen+1; i++) {
+        console.log('Tenemos i ' + i + ' Carta: '+mazoJuego[mazoJuego.length-1]);
+        crearCarta(`tp${i}`, mazoJuego.pop());
+    }
+    progBtn(3);
+    cambiarMouse(jug.tematica);
+}
+
+function rellenarMesaTripleta(){
+    limp(3);
+    server.ref(`cartas/${salaId}/mazoJuego`).once('value').then((snapshot)=>{
+        const cartasEliminar=snapshot.val();
+        for(var i = 0; i < cartasEliminar.length; i++){
+            limpiarCarta(cartasEliminar[i]);
+            crearCarta(cartasEliminar[i],mazoJuego.pop());
+        }
+        progBtn(3);
+        cambiarMouse(jug.tematica);
+    }).catch((error)=>{
+        console.log('Error al rellenar mesa',error);
+    });
+}
+
+//--------------------------------------------------Papa Caliente-----------------------------------------------------------
+function repartirCartas(mod){
+    limp(2);
+    limpiarFondo('pc');
+    for(var i = 0; i < arrJug.length; i++){
+        limpiarCarta(`${mod+i}`);
+        crearCarta(`${mod+i}`,mazoJuego.pop());
+    }
+    progBtn(2);
+    cambiarMouse(jug.tematica);
+}
+
+//--------------------------------------------------------------------------------------------------------------------------
+
