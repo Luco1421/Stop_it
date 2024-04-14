@@ -600,7 +600,7 @@ const turno = {
                 limpiarCarta('trCentro');
                 crearCarta(laAgarra.id,idAux);
                 crearCarta('trCentro', mazoJuego.pop()); 
-                limp(2);
+                limp('tr');
                 progBtn(2);
             }).catch((error)=>{
                 console.log('Error obtener cartas eliminar',error);
@@ -635,7 +635,7 @@ const turno = {
             limpiarCarta('rvCentro');
             crearCarta(laAgarra.id,idAux);
             crearCarta('rvCentro', mazoJuego.pop()); 
-            limp(2);
+            limp('rv');
             progBtn(2);
         }
     },
@@ -652,14 +652,14 @@ const turno = {
         let idAux = +laAgarra.lastElementChild.textContent;
         limpiarCarta('pzCentro');
         limpiarCarta(laAgarra.id);
-        limp(2);
         if(punos.get(id).length == 0){
             if(pichudo == null) pichudo = id;
             laAgarra.style.background = `center / contain no-repeat url(imagenes/${mazos.get(mazoId).rutaReverso})`;
             contador++;
         }
         else crearCarta(laAgarra.id, punos.get(id).pop());
-        crearCarta('pzCentro',idAux); 
+        crearCarta('pzCentro',idAux);
+        limp('pz'); 
         progBtn(2);
         if(contador >= cantPlayers-1){
             await mnsGan('Ganador: ',info.get(pichudo).name,2000);
@@ -863,8 +863,7 @@ function verificarIguales(saux,mod) {
                 alert('no presione la carta de un rival o  no presione una carta del centro');
                 return limpiarClick();
             }
-
-            console.log('Modo:', jug.modo);
+            console.log('Val1: ', val1, ' Val2: ', val2);
             switch (jug.modo){
                 case 0:
                     for(let i = 0; i < mod; i++) cartasEliminar.push(click[i].id);
