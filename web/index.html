@@ -16,7 +16,11 @@
 </head>
 <body>
     <video src="assets/bg/intro.mp4" autoplay preload muted loop></video>
-    <div hidden id="pntGan"><h1 id="ganador"></h1></div>
+    <div hidden id="pntGan">
+      <audio id="sonido">
+        <source src="assets/bg/timer.mp3" type="audio/mpeg">
+      </audio>
+      <h1 id="ganador"></h1></div>
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
           <a class="navbar-brand"><img src="
@@ -84,7 +88,7 @@
                 </div>
             </div>
             <div class="botones">
-              <button disabled id="boton-buscar" class="btn btn-primary cp" type="button" data-bs-toggle="collapse" data-bs-target="#buscar" aria-expanded="false" aria-controls="buscar" onclick="setTimeout(buscar,3000);">
+              <button disabled id="boton-buscar" class="btn btn-primary cp" type="button" data-bs-toggle="collapse" data-bs-target="#buscar" aria-expanded="false" aria-controls="buscar" onclick="document.getElementById('boton-buscar').setAttribute('disabled','true');setTimeout(buscar,3000);">
               Buscar Partida
               </button>
               <div class="collapse cargando" id="buscar">
@@ -308,17 +312,17 @@
     <div class = "page" id="pozo_pagina"> 
       <div class="contenedorCirculos">
           <div class="row centrar">
-              <div class="circulo" id="pz0"></div>
-              <div class="circulo" id="pz1"></div>
-              <div class="circulo" id="pz2"></div>
+              <div hidden class="circulo" id="pz0"></div>
+              <div hidden class="circulo" id="pz1"></div>
+              <div hidden class="circulo" id="pz2"></div>
           </div>
           <div class="row centrar">
-              <div class="circulo" id="pzCirculoCentro"></div>
+              <div hidden class="circulo" id="pzCentro"></div>
           </div>
           <div class="row centrar">
-              <div class="circulo" id="pz3"></div>
-              <div class="circulo" id="pz4"></div>
-              <div class="circulo" id="pz5"></div>
+              <div hidden class="circulo" id="pz3"></div>
+              <div hidden class="circulo" id="pz4"></div>
+              <div hidden class="circulo" id="pz5"></div>
           </div>
       </div>
     </div> 
@@ -326,17 +330,17 @@
     <div class = "page" id="regalo_envenenado_pagina"> 
       <div class="contenedorCirculos">
           <div class="row centrar">
-              <div class="circulo" id="rv0"></div>
-              <div class="circulo" id="rv1"></div>
-              <div class="circulo" id="rv2"></div>
+              <div hidden class="circulo" id="rv0"></div>
+              <div hidden class="circulo" id="rv1"></div>
+              <div hidden class="circulo" id="rv2"></div>
           </div>
           <div class="row centrar">
-              <div class="circulo" id="rvCirculoCentro"></div>
+              <div hidden class="circulo" id="rvCentro"></div>
           </div>
           <div class="row centrar">
-              <div class="circulo" id="rv3"></div>
-              <div class="circulo" id="rv4"></div>
-              <div class="circulo" id="rv5"></div>
+              <div hidden class="circulo" id="rv3"></div>
+              <div hidden class="circulo" id="rv4"></div>
+              <div hidden class="circulo" id="rv5"></div>
           </div>
       </div>
     </div>
@@ -344,17 +348,17 @@
     <div class = "page" id="torre_pagina"> 
       <div class="contenedorCirculos">
           <div class="row centrar">
-              <div class="circulo" id="tr0"></div>
-              <div class="circulo" id="tr1"></div>
-              <div class="circulo" id="tr2"></div>
+              <div hidden class="circulo" id="tr0"></div>
+              <div hidden class="circulo" id="tr1"></div>
+              <div hidden class="circulo" id="tr2"></div>
           </div>
           <div class="row centrar">
-              <div class="circulo" id="trCirculoCentro"></div>
+              <div hidden class="circulo" id="trCentro"></div>
           </div>
           <div class="row centrar">
-              <div class="circulo" id="tr3"></div>
-              <div class="circulo" id="tr4"></div>
-              <div class="circulo" id="tr5"></div>
+              <div hidden class="circulo" id="tr3"></div>
+              <div hidden class="circulo" id="tr4"></div>
+              <div hidden class="circulo" id="tr5"></div>
           </div>
       </div>
     </div>
