@@ -454,7 +454,6 @@ const winner = {
             if(antGanador!=null){
                 document.getElementById(elementosLista[antGanador.num][1]).classList.remove('winner');
             }
-            console.log('Puntos del actual ganador: ', gan.puntos);
             antGanador=gan;
             document.getElementById(elementosLista[gan.num][1]).classList.add('winner');
             pasarTurno();
@@ -463,9 +462,7 @@ const winner = {
    
     papaCaliente: async function(snapshot) {
         const nam=snapshot.val();
-        console.log('winner papaCaliente');
         if(nam!='null'){
-            console.log('Turno parcial');
             const j=info.get(nam);
             await mnsGan('Jugada de ', j.name, 1000);
             contador++;
@@ -474,10 +471,8 @@ const winner = {
             server.ref(`cartas/${salaId}/mazoJuego`).once('value').then((snapshot)=>{
                 const cartasEliminar = snapshot.val();
                 let laPone = document.querySelector(`.${cartasEliminar[0]}`);
-                console.log('La pone',info.get(cartasEliminar[0]).name);
                 let seLaPonen = document.querySelector(`.${cartasEliminar[1]}`);
                 let idAux = +laPone.lastElementChild.textContent;
-                console.log('Se la ponen',info.get(cartasEliminar[1]).name);
                 antGanador = cartasEliminar[1];
                 limpiarCarta(laPone.id);
                 limpiarCarta(seLaPonen.id);
@@ -485,11 +480,7 @@ const winner = {
                 laPone.style.background = `center / contain no-repeat url(imagenes/${mazos.get(mazoId).rutaReverso})`;
                 crearCarta(seLaPonen.id,idAux);
                 progBtn(2);
-                console.log('Despues limpiar La pone',laPone.id);
-                console.log('Despues limpiar Se la ponen',seLaPonen.id);
-                console.log('Contador: ', contador);
                 if(contador>=cantPlayers-1){
-                    console.log('entre a contador');
                     pasarTurno();
                 }
             }).catch((error)=>{
@@ -545,7 +536,6 @@ const turno = {
     tripleta: async function(){
         await mnsGan('Gana: ',antGanador.name,2000);
         limpiarClick();
-        console.log('pasa turno');
         if(mazoJuego.length<3){
             await mostrarGanador();
             server.ref('sala/'+salaId+'/ganador').off('value', winner.tripleta);
@@ -559,21 +549,18 @@ const turno = {
     },
     
     papaCaliente: async function() {
-        console.log('se paso el turno');
         const j=info.get(antGanador);
         await mnsGan('Pierde ', j.name, 1000);
         j.puntos-=1;
         contador=0;
         limpiarClick();
         if(mazoJuego.length < arrJug.length){
-            console.log('se acabo el juego');
             await mostrarGanador();
             server.ref('sala/'+salaId+'/ganador').off('value', winner.papaCaliente);
             rollBack();
         }
         else{
             await cuentaRegresiva();
-            console.log('Aqui se paso aumento turno: ', turnoLocal);
             repartirCartas('pc');
             limp('pc');
             progBtn(2);
@@ -781,7 +768,6 @@ function permutar(todasCartas){
         arCartas[i]=arCartas[a];
         arCartas[a]=aux;
     }
-    console.log('Ya permute!');
     return arCartas;
 }
 

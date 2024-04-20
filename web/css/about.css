@@ -1,0 +1,393 @@
+video{
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    position: fixed;
+    zoom: 0.25;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    z-index: -100;
+  }
+
+  .seymour-one-regular {
+    font-family: "Seymour One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  .titulo{
+    color: white;
+    text-align: center;
+    font-family: "Seymour One";
+    font-size: 2rem;
+    margin: 10px;
+  }
+
+  .navbar {
+    display: flex;
+    flex-direction: row;
+    background-color: rgba(19, 27, 42, 0.4);
+    border: solid 2px #000;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    padding: 0.85rem;
+  }
+  
+  .logo img {
+    width: 7rem;
+    height: 4rem;
+  }
+
+  .links {
+    display: flex;
+    flex-direction: row;
+    h4 {
+        margin: 1rem;
+        color: white
+    }
+  }
+
+  .button,.button::after {
+    padding: 10px 50px;
+    font-size: 20px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    background-color: transparent;
+    position: relative;
+  }
+  
+  .button::after {
+    --move1: inset(50% 50% 50% 50%);
+    --move2: inset(31% 0 40% 0);
+    --move3: inset(39% 0 15% 0);
+    --move4: inset(45% 0 40% 0);
+    --move5: inset(45% 0 6% 0);
+    --move6: inset(14% 0 61% 0);
+    clip-path: var(--move1);
+    content: 'JUGAR';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: block;
+  }
+  
+  .button:hover::after {
+    animation: glitch_4011 1s;
+    text-shadow: 10 10px 10px black;
+    animation-timing-function: steps(2, end);
+    text-shadow: -3px -3px 0px #1df2f0, 3px 3px 0px #E94BE8;
+    background-color: transparent;
+    border: 3px solid rgb(0, 255, 213);
+  }
+  
+  .button:hover {
+    text-shadow: -1px -1px 0px #1df2f0, 1px 1px 0px #E94BE8;
+  }
+  
+  .button:hover {
+    background-color: transparent;
+    border: 1px solid rgb(0, 255, 213);
+    box-shadow: 0px 10px 10px -10px rgb(0, 255, 213);
+  }
+  
+  @keyframes glitch_4011 {
+    0% {
+      clip-path: var(--move1);
+      transform: translate(0px,-10px);
+    }
+  
+    10% {
+      clip-path: var(--move2);
+      transform: translate(-10px,10px);
+    }
+  
+    20% {
+      clip-path: var(--move3);
+      transform: translate(10px,0px);
+    }
+  
+    30% {
+      clip-path: var(--move4);
+      transform: translate(-10px,10px);
+    }
+  
+    40% {
+      clip-path: var(--move5);
+      transform: translate(10px,-10px);
+    }
+  
+    50% {
+      clip-path: var(--move6);
+      transform: translate(-10px,10px);
+    }
+  
+    60% {
+      clip-path: var(--move1);
+      transform: translate(10px,-10px);
+    }
+  
+    70% {
+      clip-path: var(--move3);
+      transform: translate(-10px,10px);
+    }
+  
+    80% {
+      clip-path: var(--move2);
+      transform: translate(10px,-10px);
+    }
+  
+    90% {
+      clip-path: var(--move4);
+      transform: translate(-10px,10px);
+    }
+  
+    100% {
+      clip-path: var(--move1);
+      transform: translate(0);
+    }
+  }  
+
+  .centrar {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: 5px;
+  }
+
+  .contenedor{
+    align-content: center;
+    backdrop-filter: blur(8px);
+    border: 1px solid black;
+    border-radius: 10px;
+    margin: 10px;
+    margin-top: 2rem;
+  }
+
+  .video{
+    width: 35rem;
+    height: 20rem;
+    margin: auto;
+  }
+
+  .imagen{
+    width: 20rem;
+    height: 18rem;
+    margin: auto;
+  }
+  
+  /*LINKS GITHUB*/
+  
+  .text {
+    position: absolute;
+    color: rgb(255, 255, 255);
+    width: 120px;
+    font-weight: 600;
+    opacity: 0;
+    transition-duration: .4s;
+    text-align: center;
+  }
+
+  .button-icon {
+    display: flex;
+    border: 3px #1f8f8f solid;
+    width: fit-content;
+    height: 50px;
+    cursor: pointer;
+    margin: 1rem;
+  }
+  
+  .icon {
+    background-color: #1f8f8f;
+    padding: 10px 10px 5px 10px;
+  }
+  
+  .icon svg {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .cube {
+    transition: all 0.9s;
+    transform-style: preserve-3d;
+    width: 200px;
+    height: 100%;
+  }
+  
+  .button-icon:hover {
+    border-color: #dd650c;
+  }
+  
+  .button-icon:hover .cube {
+    transform: rotateX(90deg);
+  }
+  
+  .side {
+    height: 100%;
+    width: 200px;
+    display: flex;
+    font-size: 1em;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+  }
+
+  .top {
+    background: #dd650c;
+    color: #fff;
+    transform: rotateX(-90deg) translate3d(0, 0, -1.2em);
+  }
+  
+  .front {
+    background: #222229;
+    color: #fff;
+    transform: translate3d(0, 0, 1em);
+  }
+
+  footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: rgba(19, 27, 42, 0.4);
+    border: solid 1px #000;
+    padding: 2rem;
+  }
+
+  .Btn {
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition-duration: .4s;
+    cursor: pointer;
+    position: relative;
+    background-color: rgb(31, 31, 31);
+    overflow: hidden;
+    margin: 1rem;;
+  }
+  
+  .svgIcon {
+    transition-duration: .3s;
+  }
+  
+  .svgIcon path {
+    fill: white;
+  }
+
+  .Btn:hover {
+    width: 110px;
+    transition-duration: .4s;
+    border-radius: 30px;
+  }
+  
+  .Btn:hover .text {
+    opacity: 1;
+    transition-duration: .4s;
+  }
+  
+  .Btn:hover .svgIcon {
+    opacity: 0;
+    transition-duration: .3s;
+  }
+  
+/* ------------------------------Cartas de Kener------------------------------------------- */
+.card {
+  width: 70%;
+  height: 60%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 20px;
+  background: #1175756b;
+  padding: 1.8rem;
+  border: 2px solid #030303;
+  transition: 0.5s ease-out;
+  text-align: center;
+ }
+ 
+ .card-details {
+  color: black;
+  height: 100%;
+  gap: .5em;
+  display: grid;
+  place-content: center;
+ }
+ 
+ .card-button {
+  transform: translate(-50%, 10%);
+  width: 60%;
+  border-radius: 1rem;
+  border: none;
+  background-color: #3bc4ce;
+  color: #fff;
+  font-size: 1rem;
+  padding: .5rem 1rem;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  opacity: 0;
+  transition: 0.3s ease-out;
+ }
+
+ /*Text*/
+ .text-title {
+  font-size: 2.5vw;
+  font-weight: bold;
+  color: rgb(0, 0, 0);
+ }
+ 
+ /*Hover*/
+ .card:hover {
+  border-color: #3bc4ce;
+  box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.25);
+ }
+ 
+ .card:hover .card-button {
+  transform: translate(-50%, 50%);
+  opacity: 1;
+ }
+
+ /*--------------------RESPONSIVE--------------------*/
+
+ @media (max-width: 1200px) {
+    body {
+        zoom: 100%;
+    }
+    .centrar {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .card {
+        width: 90%;
+        text-align: center;
+    }
+    .video {
+        width: 100%;
+        height: 100%;
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
+    }
+    .imagen{
+        width: 100%;
+        height: 100%;
+        margin: auto;
+        padding: 1.5rem;
+    }
+    .titulo {
+        font-size: 1.35rem;
+        text-justify: center;
+    }
+  }
+ 
