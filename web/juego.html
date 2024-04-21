@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Global -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" shrink-to-fit=no>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Candal&family=Chicle&family=Rakkas&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Stop It</title>
+    <!-- End Global -->
+    
+</head>
+<body>
+    <video src="assets/bg/intro.mp4" autoplay preload muted loop></video>
+    <div hidden id="pntGan">
+      <audio id="sonido">
+        <source src="assets/bg/timer.mp3" type="audio/mpeg">
+      </audio>
+      <h1 id="ganador"></h1></div>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+          <a class="navbar-brand"><img src="
+      assets/logo/STOPIT.png"></a>
+          <button hidden id="nvi" class="navbar-toggler cp" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon cp"></span>
+          </button>
+          <div hidden class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+            <ul hidden id="nv" class="navbar-nav mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" id="nv-u">
+                  <img id="img-u" src="
+            assets/icos/orange.png">
+                  <h1 id="h1-u">Admin</h1>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="nv-c">
+                  <h1 id="c-nv">c0d1g0</h1>
+                  <label class="container cp" onclick="copiar();">
+                    <input checked="checked" type="checkbox">
+                    <svg viewBox="0 0 384 512" height="1em" xmlns="http://www.w3.org/2000/svg" class="clipboard"><path d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM305 273L177 401c-9.4 9.4-24.6 9.4-33.9 0L79 337c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L271 239c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"></path></svg>
+                    <svg viewBox="0 0 384 512" height="1em" xmlns="http://www.w3.org/2000/svg" class="clipboard-check"><path d="M280 64h40c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128C0 92.7 28.7 64 64 64h40 9.6C121 27.5 153.3 0 192 0s71 27.5 78.4 64H280zM64 112c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16H320c8.8 0 16-7.2 16-16V128c0-8.8-7.2-16-16-16H304v24c0 13.3-10.7 24-24 24H192 104c-13.3 0-24-10.7-24-24V112H64zm128-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"></path></svg>
+                  </label>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    <!-- PANTALLA PRINCIPAL -->
+    <div class="page activo" id="pantalla_principal">
+        <h1 class="tituloNombre">¡Bienvenido a Stop it!</h1>
+        <div class="consulta">
+            <input id="floatingInput">
+            <div class="botones">
+                <button class="btn btn-primary cp" type="button" data-bs-toggle="collapse" data-bs-target="#crear" aria-expanded="false" aria-controls="crear">
+                Crear Partida
+                </button>
+                <div class="collapse" id="crear">
+                    <div class="partida-info">
+                        <input id="floatingInput2">
+                    </div>
+                    <div class="centrar">
+                        <button class="btn btn-primary cp" id="boton-crear" onclick="crear();" disabled>Crear</button>  
+                    </div>
+                </div>
+            </div>
+            <div class="botones">
+                <button class="btn btn-primary cp" type="button" data-bs-toggle="collapse" data-bs-target="#ingresar" aria-expanded="false" aria-controls="ingresar">
+                Tengo un codigo
+                </button>
+                <div class="collapse" id="ingresar">
+                    <div class="centrar">
+                        <input id="floatingInput3">
+                        <label class="container cp">
+                            <input id='check-pegar' checked="checked" type="checkbox" onclick="pegar();">
+                            <svg viewBox="0 0 384 512" height="1em" xmlns="http://www.w3.org/2000/svg" class="clipboard"><path d="M280 64h40c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128C0 92.7 28.7 64 64 64h40 9.6C121 27.5 153.3 0 192 0s71 27.5 78.4 64H280zM64 112c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16H320c8.8 0 16-7.2 16-16V128c0-8.8-7.2-16-16-16H304v24c0 13.3-10.7 24-24 24H192 104c-13.3 0-24-10.7-24-24V112H64zm128-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"></path></svg>
+                            <svg viewBox="0 0 384 512" height="1em" xmlns="http://www.w3.org/2000/svg" class="clipboard-check"><path d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM305 273L177 401c-9.4 9.4-24.6 9.4-33.9 0L79 337c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L271 239c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"></path></svg>
+                        </label>
+                    </div>
+                    <div class="centrar">
+                        <button class="btn btn-primary cp" id="boton-entrar" onclick="ingresar()" disabled>Entrar</button>  
+                    </div>
+                </div>
+            </div>
+            <div class="botones">
+              <button disabled id="boton-buscar" class="btn btn-primary cp" type="button" data-bs-toggle="collapse" data-bs-target="#buscar" aria-expanded="false" aria-controls="buscar" onclick="document.getElementById('boton-buscar').setAttribute('disabled','true');setTimeout(buscar,3000);">
+              Buscar Partida
+              </button>
+              <div class="collapse cargando" id="buscar">
+                  <div>
+                    <div id="wifi-loader">
+                      <svg class="circle-outer" viewBox="0 0 86 86">
+                          <circle class="back" cx="43" cy="43" r="40"></circle>
+                          <circle class="front" cx="43" cy="43" r="40"></circle>
+                          <circle class="new" cx="43" cy="43" r="40"></circle>
+                      </svg>
+                      <svg class="circle-middle" viewBox="0 0 60 60">
+                          <circle class="back" cx="30" cy="30" r="27"></circle>
+                          <circle class="front" cx="30" cy="30" r="27"></circle>
+                      </svg>
+                      <svg class="circle-inner" viewBox="0 0 34 34">
+                          <circle class="back" cx="17" cy="17" r="14"></circle>
+                          <circle class="front" cx="17" cy="17" r="14"></circle>
+                      </svg>
+                      <div class="text" data-text="Searching"></div>
+                  </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+    <!-- PANTALLA MODOS PAGINA -->
+    <div class = "page" id="modos_pagina">
+      <div id="Texto">
+          <h1>MODOS DE JUEGO</h1>
+      </div>
+      <div class="centrar">
+          <div id="carouselExampleIndicators" class="carousel slide">
+              <div class="carousel-indicators cp">
+                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active cp" aria-current="true" aria-label="Slide 1"></button>
+                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2" class="cp"></button>
+                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3" class="cp"></button>
+                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4" class="cp"></button>
+                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4" aria-label="Slide 5" class="cp"></button>
+              </div>
+              <div class="carousel-inner">    
+                  <div class="carousel-item active">
+                      <div class="btn-mj" onclick="elegirModo(0);">
+                          <div class="card cp">
+                              <div class="card-body">
+                                  <h5 class="card-title">Tripleta</h5>
+                                  <p class="card-text">Se tendrá una matriz de la cantidad de figuras+1 cartas en la mesa. El objetivo del juego es ser el primero en encontrar tres cartas con una imagen en común.</p>
+                              </div>
+                          </div>
+                        </div>
+                  </div>
+                  <div class="carousel-item">
+                      <div class="btn-mj" onclick="elegirModo(1);">
+                          <div class="card cp">
+                              <div class="card-body">
+                                  <h5 class="card-title">Papa Caliente</h5>
+                                  <p class="card-text">Cada jugador tendrá una carta enfrente. El objetivo del juego es encontrar una figura en común con su carta y la de algún rival.</p>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="carousel-item">
+                      <div class="btn-mj" onclick="elegirModo(2);">
+                          <div class="card cp">
+                              <div class="card-body">
+                                  <h5 class="card-title">Torre</h5>
+                                  <p class="card-text">Habrá una pila de cartas en el centro y cada jugador tendrá una carta frente a ellos. El objetivo del juego es ser el primero en encontrar una imagen en común con la carta del tope de la pila y la carta de enfrente.</p>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="carousel-item">
+                      <div class="btn-mj" onclick="elegirModo(3);">
+                          <div class="card cp">
+                              <div class="card-body">
+                                  <h5 class="card-title">Regalo Envenenado</h5>
+                                  <p class="card-text">Habrá una pila de cartas en el centro y cada jugador tendrá una carta frente a ellos. El objetivo del juego es ser el primero en encontrar una imagen en común con la carta del tope de la pila y la carta de otro jugador.</p>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="carousel-item">
+                      <div class="btn-mj" onclick="elegirModo(4);">
+                          <div class="card cp">
+                              <div class="card-body">
+                                  <h5 class="card-title">Pozo</h5>
+                                  <p class="card-text">Cada jugador tendrá una pila de cartas de igual tamaño y habrá una carta en el centro de la mesa. El objetivo es encontrar una figura en común entre la carta del tope de la pila de enfrente y la carta del tope del centro de la mesa.</p>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <button class="carousel-control-prev cp" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon cp" aria-hidden="true"></span>
+              </button>
+              <button class="carousel-control-next cp" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+              <span class="carousel-control-next-icon cp" aria-hidden="true"></span>
+              </button>
+          </div>
+      </div> 
+  </div>
+
+    <!-- PANTALLA TEMATICA -->
+    <div class = "page" id = "tematica_pagina">
+        <div id="Texto">
+          <h1>TEMATICA</h1>
+        </div>
+        <div class="centrar">
+          <div id="carouselExampleIndicators1" class="carousel slide">
+          <div class="carousel-indicators cp">
+            <button type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide-to="0" class="active cp" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide-to="1" aria-label="Slide 2" class="cp"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide-to="2" aria-label="Slide 1" class="cp"></button>
+          </div>
+          <div class="carousel-inner">
+              <div class="carousel-item active">
+                <div class="btn btn-primary cp" data-bs-toggle="collapse" href="#orden" role="button" aria-expanded="false" aria-controls="orden" onclick = "elegirTematica(0);">
+                  <div class="imagen cp">
+                    <img src="
+              assets/tematica/avatar.png">
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="btn btn-primary cp" data-bs-toggle="collapse" href="#orden" role="button" aria-expanded="false" aria-controls="orden" onclick = "elegirTematica(1);">
+                    <div class="imagen cp">
+                      <img src="
+                assets/tematica/got.png">
+                    </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="btn btn-primary cp" data-bs-toggle="collapse" href="#orden" role="button" aria-expanded="false" aria-controls="orden" onclick = "elegirTematica(2);">
+                    <div class="imagen cp">
+                      <img src="
+                assets/tematica/brands.png">
+                    </div>
+                </div>
+              </div>
+          </div>
+          <button class="carousel-control-prev cp" type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon cp" aria-hidden="true"></span>
+          </button>
+          <button class="carousel-control-next cp" type="button" data-bs-target="#carouselExampleIndicators1" data-bs-slide="next">
+            <span class="carousel-control-next-icon cp" aria-hidden="true"></span>
+          </button>
+          </div>
+        </div>
+    
+        <div class="collapse wr" id="orden">
+          <div id="Texto">
+            <h2>Cantidad de figuras</h2>
+          </div>
+          <div class="wrapper cp">
+            <div class="option">
+              <input value="option1" name="btn" type="radio" class="input cp" onclick="elegirOrden(0);"/>
+              <div class="btn">
+                <span class="span">4</span>
+              </div>
+            </div>
+            <div class="option">
+              <input value="option2" name="btn" type="radio" class="input cp" onclick="elegirOrden(1);"/>
+              <div class="btn">
+                <span class="span">5</span>
+              </div>
+            </div>
+            <div class="option">
+              <input value="option3" name="btn" type="radio" class="input cp" onclick="elegirOrden(2);"/>
+              <div class="btn">
+                <span class="span">6</span>
+              </div>
+            </div>
+            <div class="option">
+              <input value="option4" name="btn" type="radio" class="input cp" onclick="elegirOrden(3);"/>
+              <div class="btn">
+                <span class="span">8</span>
+              </div>
+            </div>
+            <div class="option">
+              <input value="option5" name="btn" type="radio" class="input cp" onclick="elegirOrden(4);"/>
+              <div class="btn">
+                <span class="span">9</span>
+              </div> 
+            </div>
+          </div>
+          <div class="comenzar">
+            <div class="buttons">
+                <button onclick="DIOS()" id="start-btn" class="btn2"><span class="cp"></span><p class="cp" data-start="good luck!" data-text="Comenzar" data-title="Listo"></p></button>
+             </div>
+          </div>
+        </div> 
+    </div>
+
+    <div class="page" id="carga_pagina">
+      <div class="cargando">
+        <div class="loadingspinner">
+          <div id="square1"></div>
+          <div id="square2"></div>
+          <div id="square3"></div>
+          <div id="square4"></div>
+          <div id="square5"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODO DE JUEGO PAPA CALIENTE -->
+    <div class = "page" id="papa_caliente_pagina"> 
+      <div class="contenedorCirculos">
+          <div class="row centrar">
+              <div hidden class="circulo" id="pc0"></div>
+              <div hidden class="circulo" id="pc1"></div>
+              <div hidden class="circulo" id="pc2"></div>
+          </div>
+          <div class="row centrar">
+              <div hidden class="circulo" id="pc3"></div>
+              <div hidden class="circulo" id="pc4"></div>
+              <div hidden class="circulo" id="pc5"></div>
+          </div>
+      </div>
+    </div>
+
+    <!-- MODO DE JUEGO POZO -->
+    <div class = "page" id="pozo_pagina"> 
+      <div class="contenedorCirculos">
+          <div class="row centrar">
+              <div hidden class="circulo" id="pz0"></div>
+              <div hidden class="circulo" id="pz1"></div>
+              <div hidden class="circulo" id="pz2"></div>
+          </div>
+          <div class="row centrar">
+              <div hidden class="circulo" id="pzCentro"></div>
+          </div>
+          <div class="row centrar">
+              <div hidden class="circulo" id="pz3"></div>
+              <div hidden class="circulo" id="pz4"></div>
+              <div hidden class="circulo" id="pz5"></div>
+          </div>
+      </div>
+    </div> 
+
+    <!-- MODO DE JUEGO REGALO ENVENENADO -->
+    <div class = "page" id="regalo_envenenado_pagina"> 
+      <div class="contenedorCirculos">
+          <div class="row centrar">
+              <div hidden class="circulo" id="rv0"></div>
+              <div hidden class="circulo" id="rv1"></div>
+              <div hidden class="circulo" id="rv2"></div>
+          </div>
+          <div class="row centrar">
+              <div hidden class="circulo" id="rvCentro"></div>
+          </div>
+          <div class="row centrar">
+              <div hidden class="circulo" id="rv3"></div>
+              <div hidden class="circulo" id="rv4"></div>
+              <div hidden class="circulo" id="rv5"></div>
+          </div>
+      </div>
+    </div>
+
+    <!-- MODO DE JUEGO TORRE -->
+    <div class = "page" id="torre_pagina"> 
+      <div class="contenedorCirculos">
+          <div class="row centrar">
+              <div hidden class="circulo" id="tr0"></div>
+              <div hidden class="circulo" id="tr1"></div>
+              <div hidden class="circulo" id="tr2"></div>
+          </div>
+          <div class="row centrar">
+              <div hidden class="circulo" id="trCentro"></div>
+          </div>
+          <div class="row centrar">
+              <div hidden class="circulo" id="tr3"></div>
+              <div hidden class="circulo" id="tr4"></div>
+              <div hidden class="circulo" id="tr5"></div>
+          </div>
+      </div>
+    </div>
+
+    <!-- MODO DE JUEGO TRIPLETA -->
+    <div class = "page" id="tripleta_pagina"> 
+      <div class="contenedorCirculos">
+          <div class="row centrar">
+              <div hidden class="circulo" id="tp0"></div>
+              <div hidden class="circulo" id="tp1"></div>
+              <div hidden class="circulo" id="tp2"></div>
+          </div>
+          <div class="row centrar">
+              <div hidden class="circulo" id="tp3"></div>
+              <div hidden class="circulo" id="tp4"></div>
+              <div hidden class="circulo" id="tp5"></div>
+          </div>
+          <div class="row centrar">
+              <div hidden class="circulo" id="tp6"></div>
+              <div hidden class="circulo" id="tp7"></div>
+              <div hidden class="circulo" id="tp8"></div>
+              <div hidden class="circulo" id="tp9"></div>
+          </div>
+      </div>
+    </div>
+
+    <div hidden id="jugadores">
+      <h1 class="textoClave">Jugadores en la sala</h1>
+      <div class="row" id="padre">
+      </div>
+    </div> 
+
+    <!-- GLOBALES: -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+    <script src="js/connect.js"></script>
+    <script src="js/utilidades.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/animate.js"></script>
+    <!-- END GLOBALES -->
+</body>
+</html>
