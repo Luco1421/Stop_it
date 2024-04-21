@@ -112,7 +112,7 @@ Carta* mazo[73];
 Imagen foto[3][73];
 int tipoActual=0;
 int cantCartas;
-int aum = 5;
+int aum = 4;
 int carta;
 
 char infoMazo[100]="C:/Users/byluc/Desktop/Stop_it/data_base/mazo.csv";
