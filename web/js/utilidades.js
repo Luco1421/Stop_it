@@ -45,6 +45,6 @@ document.querySelector('.wrapper').addEventListener('click',
     }
 );
 
-// window.addEventListener('beforeunload', (event) => {
-//     event.preventDefault();
-// });
+window.addEventListener('beforeunload', (event) => {
+     event.preventDefault();
+});

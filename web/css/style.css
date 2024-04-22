@@ -1212,7 +1212,7 @@ figure:nth-child(3) {
   transform: scaleY(-1);
 }
 .circulo img {
-  padding: 0;
+  padding: 0.1;
 }
 
 #jugadores {
