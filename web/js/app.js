@@ -70,12 +70,15 @@ const saleJugador=(snapshot)=>{
     if(cantPlayers ==  5 && partidaIniciada == false){
         server.ref(`estado/${salaId}/disponible`).set('true');
     } 
-    if(jug.listo==true) {
-        listos--;
-    }
-    if(cantPlayers==1 && partidaIniciada==true) rollBack();
     eliminarDivHijo(jug.num);
     info.delete(out);
+    if(partidaIniciada==false && listos>0){
+        listos=0;
+        alert('Alguien se fue');
+        rollBack();
+    } 
+    if(cantPlayers==1 && partidaIniciada==true) rollBack();
+
 }
 
 const listoJugador=(snapshot)=>{
@@ -83,7 +86,6 @@ const listoJugador=(snapshot)=>{
     listos++;
     info.get(nuevo).listo=true;
     if(listos==cantPlayers){
-        server.ref(`estado/${salaId}/disponible`).set('false');
         preparar();
     }
 }
@@ -166,6 +168,7 @@ function eleccion() {
 }
 
 function preparar(){
+    if(host==playerId) server.ref(`estado/${salaId}/disponible`).set('false');
     partidaIniciada = true;
     modoCont.fill(0);
     temaCont.fill(0);
@@ -306,7 +309,7 @@ function rollBack(){
         element.innerHTML = '';
         element.setAttribute('hidden','true');
     });
-    partidaIniciada == false;
+    partidaIniciada = false;
     listos=0;
     if(cantPlayers != 6){
         server.ref(`estado/${salaId}/disponible`).set('true');
