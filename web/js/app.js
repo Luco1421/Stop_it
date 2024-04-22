@@ -188,7 +188,7 @@ function DIOS(){
         return;
     }
     app.pasar('carga_pagina');
-    server.ref(`listos/${playerId}`).set(playerId);
+    server.ref(`listos/${salaId}/${playerId}`).set(playerId);
     playerRef.update({
         modo: jug.modo,
         tematica: jug.tematica, 
@@ -289,7 +289,7 @@ function setSala(numero){
     server.ref(`sala/${salaId}/players`).on('child_added', ingresaJugador);
     server.ref(`sala/${salaId}/players`).on('child_removed', saleJugador);
     //server.ref(`sala/${salaId}/listos/${playerId}`).onDisconnect().remove();
-    server.ref(`listos`).on('child_added', listoJugador);
+    server.ref(`listos/`+salaId).on('child_added', listoJugador);
 }
 
 function rollBack(){
@@ -315,7 +315,7 @@ function rollBack(){
         j.listo=false;
         j.puntos=0;
     });
-    if(playerId==host) server.ref('listos').remove();
+    if(playerId==host) server.ref('listos/'+salaId).remove()
     app.pasar('modos_pagina');
 }
 
