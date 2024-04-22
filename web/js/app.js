@@ -63,18 +63,18 @@ const saleJugador=(snapshot)=>{
         host =  arrJug[0];
         arrJug.forEach((i)=>{if(i<host) host=i});
     }
-    const jug=info.get(out);
+    const sale=info.get(out);
     console.log('sale jugador', out);
-    ocupados[jug.num]=false;
+    ocupados[sale.num]=false;
     cantPlayers--;
     if(cantPlayers ==  5 && partidaIniciada == false){
         server.ref(`estado/${salaId}/disponible`).set('true');
     } 
-    eliminarDivHijo(jug.num);
+    eliminarDivHijo(sale.num);
     info.delete(out);
     if(partidaIniciada==false && listos>0){
         listos=0;
-        alert('Alguien se fue');
+        alert(`${sale.name} abandonó la sala`);
         rollBack();
     } 
     if(cantPlayers==1 && partidaIniciada==true) rollBack();
@@ -84,8 +84,8 @@ const saleJugador=(snapshot)=>{
 const listoJugador=(snapshot)=>{
     var nuevo=snapshot.val();
     listos++;
-    info.get(nuevo).listo=true;
-    if(listos==cantPlayers){
+    console.log('ListoJugador: ', nuevo);
+    if(listos==cantPlayers && jug.listo==true){
         preparar();
     }
 }
@@ -192,6 +192,7 @@ function DIOS(){
         alert('Se necesitan minimo dos jugadores');
         return;
     }
+    jug.listo=true;
     app.pasar('carga_pagina');
     server.ref(`listos/${salaId}/${playerId}`).set(playerId);
     server.ref(`listos/${salaId}/${playerId}`).onDisconnect().remove();
