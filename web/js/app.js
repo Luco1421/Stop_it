@@ -188,7 +188,7 @@ function DIOS(){
         return;
     }
     app.pasar('carga_pagina');
-    server.ref(`sala/${salaId}/listos/${playerId}`).set(playerId);
+    server.ref(`listos/${playerId}`).set(playerId);
     playerRef.update({
         modo: jug.modo,
         tematica: jug.tematica, 
@@ -278,6 +278,7 @@ function meterJugador(sala){
 
 function setSala(numero){
     connectUser(numero);
+    listos=0;
     server.ref(`colores/${salaId}/${numero}`).onDisconnect().set(false);
     server.ref(`sala/${salaId}/players/${playerId}`).set(playerId);
     server.ref(`sala/${salaId}/players/${playerId}`).onDisconnect().remove();
@@ -287,8 +288,8 @@ function setSala(numero){
     document.getElementById('img-u').setAttribute('src', elementosLista[jug.num][0]);
     server.ref(`sala/${salaId}/players`).on('child_added', ingresaJugador);
     server.ref(`sala/${salaId}/players`).on('child_removed', saleJugador);
-    server.ref(`sala/${salaId}/listos/${playerId}`).onDisconnect().remove();
-    server.ref(`sala/${salaId}/listos`).on('child_added', listoJugador);
+    //server.ref(`sala/${salaId}/listos/${playerId}`).onDisconnect().remove();
+    server.ref(`listos`).on('child_added', listoJugador);
 }
 
 function rollBack(){
@@ -314,10 +315,7 @@ function rollBack(){
         j.listo=false;
         j.puntos=0;
     });
-    server.ref(`sala/${salaId}/listos`).remove().then(() => {})
-    .catch((error) => {
-        console.error('Error al intentar eliminar el nodo:', error);
-    });
+    if(playerId==host) server.ref('listos').remove();
     app.pasar('modos_pagina');
 }
 
