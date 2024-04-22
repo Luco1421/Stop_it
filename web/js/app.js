@@ -70,7 +70,9 @@ const saleJugador=(snapshot)=>{
     if(cantPlayers ==  5 && partidaIniciada == false){
         server.ref(`estado/${salaId}/disponible`).set('true');
     } 
-    if(jug.listo==true) listos--;
+    if(jug.listo==true) {
+        listos--;
+    }
     if(cantPlayers==1 && partidaIniciada==true) rollBack();
     eliminarDivHijo(jug.num);
     info.delete(out);
@@ -189,6 +191,7 @@ function DIOS(){
     }
     app.pasar('carga_pagina');
     server.ref(`listos/${salaId}/${playerId}`).set(playerId);
+    server.ref(`listos/${salaId}/${playerId}`).onDisconnect().remove();
     playerRef.update({
         modo: jug.modo,
         tematica: jug.tematica, 
