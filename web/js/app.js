@@ -38,7 +38,6 @@ const app ={
     }
 };
 
-
 const ingresaJugador=(snapshot)=>{
     const nuevo=snapshot.val();
     if(nuevo<host) host=nuevo;
@@ -296,13 +295,13 @@ function rollBack(){
     limp(2);
     limp(3);
     quitarZoom();
+    cambiarMouse(0);
     document.querySelector('.wr').classList.remove('show');
     document.getElementById('start-btn').setAttribute('style','display:none');
     document.querySelectorAll('.circulo').forEach((element) => {
         element.innerHTML = '';
         element.setAttribute('hidden','true');
     });
-    cambiarMouse(0);
     partidaIniciada == false;
     listos=0;
     if(cantPlayers != 6){
@@ -319,7 +318,6 @@ function rollBack(){
     .catch((error) => {
         console.error('Error al intentar eliminar el nodo:', error);
     });
-    //limpiar();
     app.pasar('modos_pagina');
 }
 
@@ -557,12 +555,16 @@ const turno = {
         if(mazoJuego.length < arrJug.length){
             await mostrarGanador();
             server.ref('sala/'+salaId+'/ganador').off('value', winner.papaCaliente);
+            for(let i=0; i<6; i++){
+                cJ = document.getElementById(`pc${i}`);
+                if(cJ.classList.length > 1)cJ.classList.remove(cJ.classList[1]);
+            }
             rollBack();
         }
         else{
             await cuentaRegresiva();
             repartirCartas('pc');
-            limp('pc');
+            limp(2);
             progBtn(2);
         }
     },
@@ -574,6 +576,10 @@ const turno = {
             await mostrarGanador();
             server.ref('sala/'+salaId+'/ganador').off('value', winner.torre);
             document.getElementById(elementosLista[antGanador.num][1]).classList.remove('winner');
+            for(let i=0; i<6; i++){
+                cJ = document.getElementById(`tr${i}`);
+                if(cJ.classList.length > 1) cJ.classList.remove(cJ.classList[1]);
+            }
             rollBack();
         }
         else{
@@ -587,7 +593,7 @@ const turno = {
                 limpiarCarta('trCentro');
                 crearCarta(laAgarra.id,idAux);
                 crearCarta('trCentro', mazoJuego.pop()); 
-                limp('tr');
+                limp(2);
                 progBtn(2);
             }).catch((error)=>{
                 console.log('Error obtener cartas eliminar',error);
@@ -611,6 +617,10 @@ const turno = {
             await mostrarGanador();
             server.ref('sala/'+salaId+'/ganador').off('value', winner.regaloEnvenenado);
             document.getElementById(elementosLista[antGanador.num][1]).classList.remove('winner');
+            for(let i=0; i<6; i++){
+                cJ = document.getElementById(`rv${i}`);
+                if(cJ.classList.length > 1)cJ.classList.remove(cJ.classList[1]);
+            }
             rollBack();
         }
         else{
@@ -622,7 +632,7 @@ const turno = {
             limpiarCarta('rvCentro');
             crearCarta(laAgarra.id,idAux);
             crearCarta('rvCentro', mazoJuego.pop()); 
-            limp('rv');
+            limp(2);
             progBtn(2);
         }
     },
@@ -646,12 +656,16 @@ const turno = {
         }
         else crearCarta(laAgarra.id, punos.get(id).pop());
         crearCarta('pzCentro',idAux);
-        limp('pz'); 
+        limp(2); 
         progBtn(2);
         if(contador >= cantPlayers-1){
             await mnsGan('Ganador: ',info.get(pichudo).name,2000);
             server.ref(`sala/${salaId}/ganador`).off('value', winner.pozo);
             document.getElementById(elementosLista[antGanador.num][1]).classList.remove('winner');
+            for(let i=0; i<6; i++){
+                cJ = document.getElementById(`pz${i}`);
+                if(cJ.classList.length > 1)cJ.classList.remove(cJ.classList[1]);
+            }
             rollBack();
         }
     }
@@ -939,7 +953,7 @@ function voltearCarta(mod) {
     }
 }
 
-let insertarImagen = (id1,ruta,d1,d2,x,y,fs,fr,id) => {
+let insertarImagen = (id1,ruta,d1,d2,x,y,fs,fr) => {
     let carta =  document.getElementById(id1);
     let contenedor = document.createElement('div');
     contenedor.style.position = 'absolute';
@@ -979,7 +993,6 @@ function asignarJugadores(modo) {
         cJ = document.getElementById(`${modo+i}`);
         cJ.removeAttribute('hidden');
         cJ.style.border = `8px solid ${elementosLista[j.num][1]}`;
-        if(cJ.classList.length==2) cJ.classList.remove(cJ.classList[1]);
         cJ.classList.add(`${j.id}`);
     }
 }
@@ -1015,14 +1028,15 @@ let progBtn = (mod) => {
     document.querySelectorAll('.btn').forEach(i => {
         i.addEventListener("click", (mod==3)?handleClickT:handleClickM);
     });
+    cambiarMouse(jug.tematica);
 };
 
 let limp = (mod) => {
     document.querySelectorAll('.btn').forEach(i=>{
         i.removeEventListener('click',(mod==3)?handleClickT:handleClickM);
         i.style.borderColor = '';
-        click = [];
     });
+    click = [];
 }
 
 async function mnsGan(mns,name,s) {
@@ -1094,14 +1108,13 @@ async function cuentaRegresiva() {
 }
 
 function repartirCartas(mod){
-    limp(2);
     limpiarFondo(mod);
     for(var i = 0; i < arrJug.length; i++){
         limpiarCarta(`${mod+i}`);
         crearCarta(`${mod+i}`,mazoJuego.pop());
     }
+    limp(2);
     progBtn(2);
-    cambiarMouse(jug.tematica);
 }
 
 //----------------------------------------------------Tripleta-------------------------------------------------------------
@@ -1113,19 +1126,17 @@ function iniciarMesaTripleta(){
         crearCarta(`tp${i}`, mazoJuego.pop());
     }
     progBtn(3);
-    cambiarMouse(jug.tematica);
 }
 
 function rellenarMesaTripleta(){
-    limp(3);
     server.ref(`cartas/${salaId}/mazoJuego`).once('value').then((snapshot)=>{
         const cartasEliminar=snapshot.val();
         for(var i = 0; i < 3; i++){
             limpiarCarta(cartasEliminar[i]);
             crearCarta(cartasEliminar[i],mazoJuego.pop());
         }
+        limp(3);
         progBtn(3);
-        cambiarMouse(jug.tematica);
     }).catch((error)=>{
         console.log('Error al rellenar mesa',error);
     });
@@ -1135,7 +1146,6 @@ function rellenarMesaTripleta(){
 //-----------------------------------------------Regalo Envenenado-----------------------------------------------------------
 //------------------------------------------------------Pozo-----------------------------------------------------------------
 function hacerPunos(){
-    limp(2);
     limpiarFondo('pz');
     punos=new Map();
     let tam=~~((mazoJuego.length-1)/cantPlayers);
@@ -1150,5 +1160,4 @@ function hacerPunos(){
     }
     console.log('punos:',punos);
     progBtn(2);
-    cambiarMouse(jug.tematica);
 }
