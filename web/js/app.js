@@ -183,7 +183,7 @@ function preparar(){
 }
 
 function DIOS(){
-    if(cantPlayers==0){
+    if(cantPlayers<2){
         alert('Se necesitan minimo dos jugadores');
         return;
     }
@@ -680,6 +680,7 @@ const prep = {
         voltearCarta('tp');
         app.pasar('tripleta_pagina'); 
         ponerZoom();
+        await mnsGan('Modo: ','Tripleta',2000);
         await cuentaRegresiva();
         iniciarMesaTripleta();
     },
@@ -693,6 +694,7 @@ const prep = {
         voltearCarta('pc');
         app.pasar('papa_caliente_pagina');
         ponerZoom();
+        await mnsGan('Modo: ','Papa Caliente',2000);
         await cuentaRegresiva();
         repartirCartas('pc');
     },
@@ -706,6 +708,7 @@ const prep = {
         app.pasar('torre_pagina');
         document.getElementById('trCentro').removeAttribute('hidden');
         ponerZoom();
+        await mnsGan('Modo: ','Torre',2000);
         await cuentaRegresiva();
         crearCarta('trCentro',mazoJuego.pop());
         repartirCartas('tr');
@@ -720,6 +723,7 @@ const prep = {
         app.pasar('regalo_envenenado_pagina');
         document.getElementById('rvCentro').removeAttribute('hidden');
         ponerZoom();
+        await mnsGan('Modo: ','Regalo Envenenado',2000);
         await cuentaRegresiva();
         crearCarta('rvCentro',mazoJuego.pop());
         repartirCartas('rv');
@@ -735,6 +739,7 @@ const prep = {
         app.pasar('pozo_pagina');
         document.getElementById('pzCentro').removeAttribute('hidden');
         ponerZoom();
+        await mnsGan('Modo: ','Pozo',2000);
         await cuentaRegresiva();
         hacerPunos();
     }
